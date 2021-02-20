@@ -1,0 +1,80 @@
+<html lang="en"> 
+	<head> 
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> 
+		<link rel="stylesheet" href="style.css" /> 
+		<meta charset="UTF-8" /> 
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0" /> 
+		<title>Gas level Monitoring</title> 
+	</head> 
+	<body> 	
+	<canvas id = "chart" width="400" height="400"></canvas>	
+
+
+		<script>
+			var level = [];
+			var date = [];
+
+
+	
+			// api url 
+				
+
+
+				// Defining async function 
+				async function getapi() { 
+					const api_url = 
+					"https://api.thingspeak.com/channels/1304091/fields/1.json?api_key=9XBFB4NAO208GC01&results=1"; 
+
+						var ctx = document.getElementById('chart').getContext('2d');
+					
+					// Storing response 
+					const response = await fetch(api_url); 
+					
+					// Storing data in form of JSON 
+					var data = await response.json(); 
+					level.push(parseInt(data.feeds[0].field1));
+					date.push(data.feeds[0].created_at);
+					console.log(level); 
+					console.log(date);	
+
+					var dat = {
+					    labels: date,
+					    datasets: [{data: level }]
+					    }
+					var options = {
+					responsive: true,
+					title: {
+					  display: true,
+					  position: "top",
+					  text: "Gas level",
+					  fontSize: 18,
+					  fontColor: "#111"
+					},
+					legend: {
+					  display: true,
+					  position: "bottom",
+					  labels: {
+					    fontColor: "#333",
+					    fontSize: 16
+					  }
+					}
+					};  
+
+					var myChart = new Chart(ctx, {
+					    type: 'line',
+					    data: dat,
+					    options: options
+					});
+				 
+				// Calling that async function 
+}
+setInterval(getapi,10000);
+
+  
+
+
+					
+		</script>
+	</body> 
+</html> 
